@@ -49,10 +49,10 @@ export function OutfitGenerator({
 }) {
   const { t } = useLang();
   const [jacketOn, setJacketOn] = useState(false);
-  const [includeWomen, setIncludeWomen] = useState(false);
+  const [womenOnly, setWomenOnly] = useState(false);
   const pools = useMemo(
-    () => ALL_SLOTS.map((slot) => ({ slot, items: pickPool(products, slot, includeWomen) })),
-    [products, includeWomen],
+    () => ALL_SLOTS.map((slot) => ({ slot, items: pickPool(products, slot, womenOnly) })),
+    [products, womenOnly],
   );
   const slots = useMemo(
     () => ALL_SLOTS.filter((s) => s.key !== "jacket" || jacketOn),
