@@ -60,12 +60,6 @@ function Index() {
     [products],
   );
 
-  const counts = useMemo(() => {
-    const map: Record<string, number> = {};
-    for (const p of all) map[p.category] = (map[p.category] ?? 0) + 1;
-    return map;
-  }, [all]);
-
   const filtered = useMemo(() => {
     const lo = min === "" ? -Infinity : Number(min);
     const hi = max === "" ? Infinity : Number(max);
@@ -79,9 +73,6 @@ function Index() {
         Number(p.price) <= hi,
     );
   }, [all, q, cat, min, max, bestOnly, girlOnly]);
-
-  const bestCount = useMemo(() => all.filter(isBest).length, [all]);
-  const girlCount = useMemo(() => all.filter((p) => p.for_women).length, [all]);
 
   const [limit, setLimit] = useState(PAGE_SIZE);
 
@@ -171,11 +162,6 @@ function Index() {
           >
             <span className="text-sm leading-none">🔥</span>
             {t("finder.bestOnly", "Best batch only")}
-            <span
-              className={`rounded-md px-1.5 py-0.5 text-[10px] font-black ${bestOnly ? "bg-surface-deep/20" : "bg-secondary"}`}
-            >
-              {bestCount}
-            </span>
           </button>
           <button
             type="button"
@@ -185,11 +171,6 @@ function Index() {
           >
             <span className="text-sm leading-none">👛</span>
             {t("finder.girlZone", "Girl Zone")}
-            <span
-              className={`rounded-md px-1.5 py-0.5 text-[10px] font-black ${girlOnly ? "bg-surface-deep/20" : "bg-secondary"}`}
-            >
-              {girlCount}
-            </span>
           </button>
 
           <button
@@ -209,7 +190,7 @@ function Index() {
       </div>
 
       <h2 className="mb-4 text-lg font-bold">
-        {t("finder.all")} <span className="text-primary">({all.length})</span>
+        {t("finder.all")}
       </h2>
 
       <div className="mb-6 flex flex-wrap gap-2">
@@ -217,7 +198,7 @@ function Index() {
           onClick={() => setCat("")}
           className={`rounded-lg border px-3 py-1.5 text-xs font-semibold ${cat === "" ? "border-primary text-primary glow-ring" : "border-border text-muted-foreground"}`}
         >
-          {t("finder.allCats")} ({all.length})
+          {t("finder.allCats")}
         </button>
         {(categories ?? []).map((c) => (
           <button
@@ -225,7 +206,7 @@ function Index() {
             onClick={() => setCat(c.name)}
             className={`rounded-lg border px-3 py-1.5 text-xs font-semibold ${cat === c.name ? "border-primary text-primary glow-ring" : "border-border text-muted-foreground"}`}
           >
-            {t(`cat.${c.name}`, c.name)} ({counts[c.name] ?? 0})
+            {t(`cat.${c.name}`, c.name)}
           </button>
         ))}
       </div>
@@ -243,15 +224,12 @@ function Index() {
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-xs text-muted-foreground">
-              {visible.length} / {filtered.length}
-            </p>
             {remaining > 0 ? (
               <button
                 onClick={() => setLimit((l) => l + PAGE_SIZE)}
                 className="rounded-xl gradient-brand px-8 py-3 text-xs font-extrabold uppercase tracking-wide text-surface-deep transition-transform hover:-translate-y-0.5 hover:glow-ring-strong"
               >
-                {t("finder.loadMore")} ({Math.min(PAGE_SIZE, remaining)})
+                {t("finder.loadMore")}
               </button>
             ) : null}
           </div>
