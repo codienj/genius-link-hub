@@ -21,9 +21,9 @@ const ALL_SLOTS: Slot[] = [
 
 const RAIN_MATCH = ["przeciwdeszcz", "rain"];
 
-function pickPool(products: Product[], slot: Slot, includeWomen: boolean) {
+function pickPool(products: Product[], slot: Slot, womenOnly: boolean) {
   return products.filter((p) => {
-    if (!includeWomen && p.for_women) return false;
+    if (womenOnly ? !p.for_women : p.for_women) return false;
     const c = (p.category || "").toLowerCase();
     // Jacket slot: winter jackets only — exclude rain jackets.
     if (slot.key === "jacket" && RAIN_MATCH.some((m) => c.includes(m))) return false;
