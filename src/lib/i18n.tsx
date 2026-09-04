@@ -365,7 +365,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = safeStorage.get("pkmr_lang");
-    if (saved === "en" || saved === "pl") setLangState(saved);
+    if (saved && LANG_CODES.includes(saved as Lang)) setLangState(saved as Lang);
   }, []);
 
   const setLang = (l: Lang) => {
