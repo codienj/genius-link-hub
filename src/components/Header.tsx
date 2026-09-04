@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useSettings } from "@/lib/store";
-import { useLang } from "@/lib/i18n";
+import { LANGS, useLang } from "@/lib/i18n";
 
 const tabs = [
   { to: "/", key: "nav.finder" },
