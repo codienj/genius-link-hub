@@ -21,9 +21,9 @@ const ALL_SLOTS: Slot[] = [
 
 const RAIN_MATCH = ["przeciwdeszcz", "rain"];
 
-function pickPool(products: Product[], slot: Slot, includeWomen: boolean) {
+function pickPool(products: Product[], slot: Slot, womenOnly: boolean) {
   return products.filter((p) => {
-    if (!includeWomen && p.for_women) return false;
+    if (womenOnly ? !p.for_women : p.for_women) return false;
     const c = (p.category || "").toLowerCase();
     // Jacket slot: winter jackets only — exclude rain jackets.
     if (slot.key === "jacket" && RAIN_MATCH.some((m) => c.includes(m))) return false;
@@ -49,10 +49,10 @@ export function OutfitGenerator({
 }) {
   const { t } = useLang();
   const [jacketOn, setJacketOn] = useState(false);
-  const [includeWomen, setIncludeWomen] = useState(false);
+  const [womenOnly, setWomenOnly] = useState(false);
   const pools = useMemo(
-    () => ALL_SLOTS.map((slot) => ({ slot, items: pickPool(products, slot, includeWomen) })),
-    [products, includeWomen],
+    () => ALL_SLOTS.map((slot) => ({ slot, items: pickPool(products, slot, womenOnly) })),
+    [products, womenOnly],
   );
   const slots = useMemo(
     () => ALL_SLOTS.filter((s) => s.key !== "jacket" || jacketOn),
@@ -120,58 +120,32 @@ export function OutfitGenerator({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
+            aria-pressed={womenOnly}
             onClick={() => {
-              setIncludeWomen((v) => !v);
+              setWomenOnly((v) => !v);
               setOutfit({});
             }}
-            className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left transition-all duration-200 active:scale-[0.97] ${
-              includeWomen
-                ? "border-primary/60 bg-primary/10"
-                : "border-border bg-secondary/40 hover:border-primary/40"
+            className={`rounded-xl border px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all active:scale-95 ${
+              womenOnly
+                ? "gradient-brand border-transparent text-surface-deep glow-ring"
+                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
             }`}
-            aria-pressed={includeWomen}
           >
-            <span
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-200 ${
-                includeWomen
-                  ? "border-primary bg-primary text-surface"
-                  : "border-muted-foreground/40 bg-transparent text-transparent hover:border-primary/60"
-              }`}
-            >
-              <svg
-                className="h-3 w-3"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </span>
-            <span className="min-w-0">
-              <span className={`block text-[11px] font-bold ${includeWomen ? "text-primary" : "text-foreground"}`}>
-                👩 {t("outfit.includeWomen")}
-              </span>
-            </span>
+            👛 {t("finder.girlZone", "Girl Zone")}
           </button>
-          {jacketOn ? (
-            <button
-              onClick={removeJacket}
-              className="rounded-xl border border-border px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:border-destructive hover:text-destructive"
-            >
-              🧥 {t("outfit.removeJacket")}
-            </button>
-          ) : (
-            <button
-              onClick={addJacket}
-              disabled={jacketPool.length === 0}
-              className="rounded-xl border border-primary/60 px-4 py-3 text-xs font-bold uppercase tracking-wide text-primary hover:bg-primary/10 disabled:opacity-40"
-            >
-              🧥 {t("outfit.addJacket")}
-            </button>
-          )}
+          <button
+            type="button"
+            aria-pressed={jacketOn}
+            onClick={() => (jacketOn ? removeJacket() : addJacket())}
+            disabled={!jacketOn && jacketPool.length === 0}
+            className={`rounded-xl border px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all active:scale-95 disabled:opacity-40 ${
+              jacketOn
+                ? "gradient-brand border-transparent text-surface-deep glow-ring"
+                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+            }`}
+          >
+            🧥 {jacketOn ? t("outfit.removeJacket") : t("outfit.addJacket")}
+          </button>
           <button
             onClick={() => rollAll()}
             disabled={spinning}
@@ -183,22 +157,7 @@ export function OutfitGenerator({
       </div>
       <div className="mt-6 grid gap-4 grid-cols-2 lg:grid-cols-5">
         {ALL_SLOTS.map((slot) => {
-          if (slot.key === "jacket" && !jacketOn) {
-            return (
-              <button
-                key="jacket-add"
-                onClick={addJacket}
-                disabled={jacketPool.length === 0}
-                className="flex min-h-[180px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/50 bg-secondary/20 p-4 text-primary transition-colors hover:bg-primary/10 disabled:opacity-40"
-              >
-                <span className="text-3xl">🧥</span>
-                <span className="text-2xl font-black leading-none">+</span>
-                <span className="text-[11px] font-bold uppercase tracking-wide">
-                  {t("outfit.jacket")}
-                </span>
-              </button>
-            );
-          }
+          if (slot.key === "jacket" && !jacketOn) return null;
           const item = outfit[slot.key] ?? null;
           const empty = pools.find((p) => p.slot.key === slot.key)?.items.length === 0;
           return (
