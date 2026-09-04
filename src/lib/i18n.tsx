@@ -1,10 +1,23 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { safeStorage, useSettings } from "@/lib/store";
 
-export type Lang = "pl" | "en";
+export type Lang = "pl" | "en" | "de" | "fr" | "es" | "it" | "zh";
+
+/** Lista języków w przełączniku (kod, etykieta, emoji flagi). */
+export const LANGS: { code: Lang; label: string; flag: string }[] = [
+  { code: "pl", label: "Polski", flag: "🇵🇱" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "it", label: "Italiano", flag: "🇮🇹" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+];
+
+const LANG_CODES = LANGS.map((l) => l.code);
 
 /** Domyślne teksty. Admin może nadpisać każdy z nich w zakładce „Języki”. */
-export const DICT: Record<string, { pl: string; en: string }> = {
+export const DICT: Record<string, Partial<Record<Lang, string>> & { pl: string; en: string }> = {
   "nav.finder": { pl: "Product Finder", en: "Product Finder" },
   "nav.outfits": { pl: "Losowanie outfitów", en: "Outfit roll" },
   "nav.sellers": { pl: "Sprzedawcy", en: "Stores" },
