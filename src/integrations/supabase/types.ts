@@ -116,6 +116,7 @@ export type Database = {
           store_url: string
           tiktok_url: string | null
           title: string
+          verified: boolean
           views: number
         }
         Insert: {
@@ -141,6 +142,7 @@ export type Database = {
           store_url?: string
           tiktok_url?: string | null
           title: string
+          verified?: boolean
           views?: number
         }
         Update: {
@@ -166,6 +168,7 @@ export type Database = {
           store_url?: string
           tiktok_url?: string | null
           title?: string
+          verified?: boolean
           views?: number
         }
         Relationships: [
@@ -284,6 +287,7 @@ export type Database = {
           min_weight: number
           price_per_kg: number
           price_table: Json
+          signup_url: string
           sort_order: number
         }
         Insert: {
@@ -298,6 +302,7 @@ export type Database = {
           min_weight?: number
           price_per_kg?: number
           price_table?: Json
+          signup_url?: string
           sort_order?: number
         }
         Update: {
@@ -312,6 +317,7 @@ export type Database = {
           min_weight?: number
           price_per_kg?: number
           price_table?: Json
+          signup_url?: string
           sort_order?: number
         }
         Relationships: []
