@@ -60,8 +60,8 @@ export function Header() {
   const logo = settings?.["agent_logo_url"];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-surface-deep/85 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6">
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 rounded-2xl border border-border/60 bg-surface-deep/85 px-4 py-3 shadow-lg backdrop-blur-xl glow-ring sm:px-6">
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-3">
             {logo ? (
