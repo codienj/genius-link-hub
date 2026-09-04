@@ -1145,17 +1145,25 @@ function ProductsTab() {
   }, [products, orderIds]);
 
   const q = search.trim().toLowerCase();
-  const matched = useMemo(
-    () =>
-      ordered.filter((p) =>
-        q
-          ? [p.title, p.category, p.batch, p.store_name].some((v) =>
-              (v ?? "").toLowerCase().includes(q),
-            )
-          : true,
-      ),
-    [ordered, q],
-  );
+  /** Produkt bez działającego zdjęcia — trafia na samą górę listy do poprawy. */
+  const brokenImage = (p: Product) =>
+    !p.image_url || p.image_url.startsWith("/api/public/product-image");
+
+  const matched = useMemo(() => {
+    const list = ordered.filter((p) =>
+      q
+        ? [p.title, p.category, p.batch, p.store_name].some((v) =>
+            (v ?? "").toLowerCase().includes(q),
+          )
+        : true,
+    );
+    if (orderIds) return list;
+    // Stabilne sortowanie: najpierw produkty bez zdjęcia.
+    return list
+      .map((p, i) => ({ p, i }))
+      .sort((a, b) => Number(brokenImage(b.p)) - Number(brokenImage(a.p)) || a.i - b.i)
+      .map((x) => x.p);
+  }, [ordered, q, orderIds]);
 
   useEffect(() => {
     setLimit(ADMIN_PAGE_SIZE);
@@ -1163,6 +1171,7 @@ function ProductsTab() {
 
   const visible = matched.slice(0, limit);
   const remaining = matched.length - visible.length;
+
 
 
 
@@ -1627,7 +1636,8 @@ function ProductsTab() {
               </button>
               <button
                 className={btnGhost}
-                onClick={() =>
+                onClick={() => {
+                  globalThis.scrollTo?.({ top: 0, behavior: "smooth" });
                   setForm({
                     id: p.id,
                     title: p.title,
@@ -1650,8 +1660,8 @@ function ProductsTab() {
                     store_url: p.store_url ?? "",
                     store_name: p.store_name ?? "",
                     agent_links: p.agent_links ?? {},
-                  })
-                }
+                  });
+                }}
               >
                 Edytuj
               </button>
