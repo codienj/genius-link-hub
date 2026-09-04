@@ -120,58 +120,32 @@ export function OutfitGenerator({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
+            aria-pressed={womenOnly}
             onClick={() => {
-              setIncludeWomen((v) => !v);
+              setWomenOnly((v) => !v);
               setOutfit({});
             }}
-            className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-left transition-all duration-200 active:scale-[0.97] ${
-              includeWomen
-                ? "border-primary/60 bg-primary/10"
-                : "border-border bg-secondary/40 hover:border-primary/40"
+            className={`rounded-xl border px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all active:scale-95 ${
+              womenOnly
+                ? "gradient-brand border-transparent text-surface-deep glow-ring"
+                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
             }`}
-            aria-pressed={includeWomen}
           >
-            <span
-              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-200 ${
-                includeWomen
-                  ? "border-primary bg-primary text-surface"
-                  : "border-muted-foreground/40 bg-transparent text-transparent hover:border-primary/60"
-              }`}
-            >
-              <svg
-                className="h-3 w-3"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </span>
-            <span className="min-w-0">
-              <span className={`block text-[11px] font-bold ${includeWomen ? "text-primary" : "text-foreground"}`}>
-                👩 {t("outfit.includeWomen")}
-              </span>
-            </span>
+            👛 {t("finder.girlZone", "Girl Zone")}
           </button>
-          {jacketOn ? (
-            <button
-              onClick={removeJacket}
-              className="rounded-xl border border-border px-4 py-3 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:border-destructive hover:text-destructive"
-            >
-              🧥 {t("outfit.removeJacket")}
-            </button>
-          ) : (
-            <button
-              onClick={addJacket}
-              disabled={jacketPool.length === 0}
-              className="rounded-xl border border-primary/60 px-4 py-3 text-xs font-bold uppercase tracking-wide text-primary hover:bg-primary/10 disabled:opacity-40"
-            >
-              🧥 {t("outfit.addJacket")}
-            </button>
-          )}
+          <button
+            type="button"
+            aria-pressed={jacketOn}
+            onClick={() => (jacketOn ? removeJacket() : addJacket())}
+            disabled={!jacketOn && jacketPool.length === 0}
+            className={`rounded-xl border px-4 py-3 text-xs font-bold uppercase tracking-wide transition-all active:scale-95 disabled:opacity-40 ${
+              jacketOn
+                ? "gradient-brand border-transparent text-surface-deep glow-ring"
+                : "border-border text-muted-foreground hover:border-primary hover:text-primary"
+            }`}
+          >
+            🧥 {jacketOn ? t("outfit.removeJacket") : t("outfit.addJacket")}
+          </button>
           <button
             onClick={() => rollAll()}
             disabled={spinning}
