@@ -1,10 +1,23 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { safeStorage, useSettings } from "@/lib/store";
 
-export type Lang = "pl" | "en";
+export type Lang = "pl" | "en" | "de" | "fr" | "es" | "it" | "zh";
+
+/** Lista języków w przełączniku (kod, etykieta, emoji flagi). */
+export const LANGS: { code: Lang; label: string; flag: string }[] = [
+  { code: "pl", label: "Polski", flag: "🇵🇱" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "it", label: "Italiano", flag: "🇮🇹" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+];
+
+const LANG_CODES = LANGS.map((l) => l.code);
 
 /** Domyślne teksty. Admin może nadpisać każdy z nich w zakładce „Języki”. */
-export const DICT: Record<string, { pl: string; en: string }> = {
+export const DICT: Record<string, Partial<Record<Lang, string>> & { pl: string; en: string }> = {
   "nav.finder": { pl: "Product Finder", en: "Product Finder" },
   "nav.outfits": { pl: "Losowanie outfitów", en: "Outfit roll" },
   "nav.sellers": { pl: "Sprzedawcy", en: "Stores" },
@@ -214,6 +227,130 @@ export const DICT: Record<string, { pl: string; en: string }> = {
   "stores.enter": { pl: "Wejd\u017a \u2192", en: "Enter \u2192" },
 };
 
+/** Tłumaczenia najważniejszych tekstów na pozostałe języki (reszta = angielski). */
+const EXTRA: Partial<Record<Lang, Record<string, string>>> = {
+  de: {
+    "nav.finder": "Produktsuche",
+    "nav.outfits": "Outfit-Roll",
+    "nav.sellers": "Shops",
+    "nav.agents": "Agenten",
+    "nav.promos": "Angebote",
+    "nav.guide": "Guides & Tools",
+    "nav.tiktok": "TikTok-Links",
+    "finder.all": "Alle Produkte",
+    "finder.search": "Produkt suchen...",
+    "finder.priceFrom": "Preis ab (PLN)",
+    "finder.priceTo": "Preis bis (PLN)",
+    "finder.clear": "Filter löschen",
+    "finder.empty": "Keine Produkte gefunden.",
+    "finder.allCats": "Alle",
+    "finder.loadMore": "Mehr laden",
+    "home.title1": "Finde deine",
+    "home.title2": "besten Finds",
+    "home.subtitle":
+      "Geprüfte Produkte, QC-Fotos und direkte Kauflinks über deinen Agenten.",
+    "home.cats": "Produktkategorien",
+    "home.outfitCta": "Outfit rollen →",
+  },
+  fr: {
+    "nav.finder": "Recherche produits",
+    "nav.outfits": "Tirage d'outfit",
+    "nav.sellers": "Boutiques",
+    "nav.agents": "Agents",
+    "nav.promos": "Promos",
+    "nav.guide": "Guides & Outils",
+    "nav.tiktok": "Liens TikTok",
+    "finder.all": "Tous les produits",
+    "finder.search": "Rechercher un produit...",
+    "finder.priceFrom": "Prix à partir de (PLN)",
+    "finder.priceTo": "Prix jusqu'à (PLN)",
+    "finder.clear": "Effacer les filtres",
+    "finder.empty": "Aucun produit à afficher.",
+    "finder.allCats": "Tous",
+    "finder.loadMore": "Charger plus",
+    "home.title1": "Trouve tes",
+    "home.title2": "meilleurs finds",
+    "home.subtitle":
+      "Produits vérifiés, photos QC et liens d'achat directs via ton agent.",
+    "home.cats": "Catégories de produits",
+    "home.outfitCta": "Tirer un outfit →",
+  },
+  es: {
+    "nav.finder": "Buscador de productos",
+    "nav.outfits": "Sorteo de outfits",
+    "nav.sellers": "Tiendas",
+    "nav.agents": "Agentes",
+    "nav.promos": "Ofertas",
+    "nav.guide": "Guías y herramientas",
+    "nav.tiktok": "Enlaces de TikTok",
+    "finder.all": "Todos los productos",
+    "finder.search": "Buscar producto...",
+    "finder.priceFrom": "Precio desde (PLN)",
+    "finder.priceTo": "Precio hasta (PLN)",
+    "finder.clear": "Borrar filtros",
+    "finder.empty": "No hay productos para mostrar.",
+    "finder.allCats": "Todos",
+    "finder.loadMore": "Cargar más",
+    "home.title1": "Encuentra tus",
+    "home.title2": "mejores finds",
+    "home.subtitle":
+      "Productos verificados, fotos QC y enlaces de compra directos con tu agente.",
+    "home.cats": "Categorías de productos",
+    "home.outfitCta": "Sortear outfit →",
+  },
+  it: {
+    "nav.finder": "Ricerca prodotti",
+    "nav.outfits": "Estrazione outfit",
+    "nav.sellers": "Negozi",
+    "nav.agents": "Agenti",
+    "nav.promos": "Offerte",
+    "nav.guide": "Guide e strumenti",
+    "nav.tiktok": "Link TikTok",
+    "finder.all": "Tutti i prodotti",
+    "finder.search": "Cerca prodotto...",
+    "finder.priceFrom": "Prezzo da (PLN)",
+    "finder.priceTo": "Prezzo fino a (PLN)",
+    "finder.clear": "Cancella filtri",
+    "finder.empty": "Nessun prodotto da mostrare.",
+    "finder.allCats": "Tutti",
+    "finder.loadMore": "Carica altro",
+    "home.title1": "Trova i tuoi",
+    "home.title2": "migliori finds",
+    "home.subtitle":
+      "Prodotti verificati, foto QC e link d'acquisto diretti tramite il tuo agente.",
+    "home.cats": "Categorie di prodotti",
+    "home.outfitCta": "Estrai outfit →",
+  },
+  zh: {
+    "nav.finder": "找货",
+    "nav.outfits": "随机穿搭",
+    "nav.sellers": "店铺",
+    "nav.agents": "代购",
+    "nav.promos": "优惠",
+    "nav.guide": "教程与工具",
+    "nav.tiktok": "TikTok 链接",
+    "finder.all": "全部商品",
+    "finder.search": "搜索商品...",
+    "finder.priceFrom": "最低价格 (PLN)",
+    "finder.priceTo": "最高价格 (PLN)",
+    "finder.clear": "清除筛选",
+    "finder.empty": "暂无商品。",
+    "finder.allCats": "全部",
+    "finder.loadMore": "加载更多",
+    "home.title1": "找到你的",
+    "home.title2": "最佳好物",
+    "home.subtitle": "已验证商品、QC 图片，以及通过代购的直接购买链接。",
+    "home.cats": "商品分类",
+    "home.outfitCta": "随机穿搭 →",
+  },
+};
+
+for (const [lang, entries] of Object.entries(EXTRA)) {
+  for (const [key, value] of Object.entries(entries)) {
+    if (DICT[key]) DICT[key]![lang as Lang] = value;
+  }
+}
+
 export const DICT_KEYS = Object.keys(DICT);
 
 export const i18nSettingKey = (lang: Lang, key: string) => `i18n_${lang}_${key}`;
@@ -228,7 +365,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const saved = safeStorage.get("pkmr_lang");
-    if (saved === "en" || saved === "pl") setLangState(saved);
+    if (saved && LANG_CODES.includes(saved as Lang)) setLangState(saved as Lang);
   }, []);
 
   const setLang = (l: Lang) => {
@@ -247,7 +384,7 @@ export function useLang() {
   const t = (key: string, fallback?: string) => {
     const override = settings?.[i18nSettingKey(lang, key)];
     if (override && override.trim()) return override;
-    return DICT[key]?.[lang] ?? fallback ?? key;
+    return DICT[key]?.[lang] ?? DICT[key]?.en ?? fallback ?? key;
   };
 
   return { lang, setLang, t };

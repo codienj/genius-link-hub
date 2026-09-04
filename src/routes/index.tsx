@@ -63,9 +63,13 @@ function Index() {
   const filtered = useMemo(() => {
     const lo = min === "" ? -Infinity : Number(min);
     const hi = max === "" ? Infinity : Number(max);
+    const needle = q.trim().toLowerCase();
     return all.filter(
       (p) =>
-        p.title.toLowerCase().includes(q.toLowerCase()) &&
+        (needle === "" ||
+          `${p.title} ${p.batch ?? ""} ${p.quality ?? ""} ${p.category ?? ""}`
+            .toLowerCase()
+            .includes(needle)) &&
         (cat === "" || p.category === cat) &&
         (!bestOnly || isBest(p)) &&
         (!girlOnly || p.for_women) &&

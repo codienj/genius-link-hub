@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useSettings } from "@/lib/store";
-import { useLang } from "@/lib/i18n";
+import { LANGS, useLang } from "@/lib/i18n";
 
 const tabs = [
   { to: "/", key: "nav.finder" },
@@ -12,46 +12,28 @@ const tabs = [
   { to: "/linki", key: "nav.tiktok" },
 ] as const;
 
-function FlagIcon({ lang }: { lang: "pl" | "en" }) {
-  if (lang === "pl") {
-    return (
-      <svg viewBox="0 0 20 14" className="h-3 w-[18px] rounded-[2px] shadow-sm" aria-hidden="true">
-        <rect width="20" height="7" fill="#fff" />
-        <rect y="7" width="20" height="7" fill="#dc143c" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 20 14" className="h-3 w-[18px] rounded-[2px] shadow-sm" aria-hidden="true">
-      <rect width="20" height="14" fill="#012169" />
-      <path d="M0 0l20 14M20 0L0 14" stroke="#fff" strokeWidth="2.8" />
-      <path d="M0 0l20 14M20 0L0 14" stroke="#C8102E" strokeWidth="1.4" />
-      <path d="M10 0v14M0 7h20" stroke="#fff" strokeWidth="4.5" />
-      <path d="M10 0v14M0 7h20" stroke="#C8102E" strokeWidth="2.6" />
-    </svg>
-  );
-}
-
 function LanguageSwitcher() {
   const { lang, setLang } = useLang();
   return (
-    <div className="flex items-center gap-1 rounded-lg border border-border bg-secondary p-0.5">
-      {(["pl", "en"] as const).map((l) => (
+    <div className="flex max-w-[60vw] items-center gap-1 overflow-x-auto rounded-lg border border-border bg-secondary p-0.5">
+      {LANGS.map((l) => (
         <button
-          key={l}
-          onClick={() => setLang(l)}
-          aria-label={l === "pl" ? "Polski" : "English"}
-          className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
-            lang === l ? "bg-surface text-primary glow-ring" : "text-muted-foreground"
+          key={l.code}
+          onClick={() => setLang(l.code)}
+          aria-label={l.label}
+          title={l.label}
+          className={`flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
+            lang === l.code ? "bg-surface text-primary glow-ring" : "text-muted-foreground"
           }`}
         >
-          <FlagIcon lang={l} />
-          {l === "pl" ? "PL" : "EN"}
+          <span aria-hidden="true">{l.flag}</span>
+          {l.code.toUpperCase()}
         </button>
       ))}
     </div>
   );
 }
+
 
 
 export function Header() {
