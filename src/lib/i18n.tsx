@@ -384,7 +384,7 @@ export function useLang() {
   const t = (key: string, fallback?: string) => {
     const override = settings?.[i18nSettingKey(lang, key)];
     if (override && override.trim()) return override;
-    return DICT[key]?.[lang] ?? fallback ?? key;
+    return DICT[key]?.[lang] ?? DICT[key]?.en ?? fallback ?? key;
   };
 
   return { lang, setLang, t };
