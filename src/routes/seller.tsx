@@ -59,7 +59,6 @@ function SellerPage() {
       data: { username: user.trim(), passwordHash: await sha256Hex(pass) },
     }).catch(() => ({ ok: false as const }));
     if (!res.ok || !("sellerId" in res)) {
-      setErr("Nieprawidłowe dane logowania.");
       return;
     }
     if ("token" in res) setPanelToken(res.token);
