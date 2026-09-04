@@ -1636,7 +1636,8 @@ function ProductsTab() {
               </button>
               <button
                 className={btnGhost}
-                onClick={() =>
+                onClick={() => {
+                  globalThis.scrollTo?.({ top: 0, behavior: "smooth" });
                   setForm({
                     id: p.id,
                     title: p.title,
@@ -1659,8 +1660,8 @@ function ProductsTab() {
                     store_url: p.store_url ?? "",
                     store_name: p.store_name ?? "",
                     agent_links: p.agent_links ?? {},
-                  })
-                }
+                  });
+                }}
               >
                 Edytuj
               </button>
