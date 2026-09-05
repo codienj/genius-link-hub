@@ -80,6 +80,7 @@ export function OutfitGenerator({
         next[slot.key] = randomOf(items);
       }
       setOutfit(next);
+      setTick((v) => v + 1);
       if (ticks >= 14) {
         if (timer.current) clearInterval(timer.current);
         setSpinning(false);
