@@ -107,6 +107,20 @@ export function OutfitGenerator({
 
   return (
     <section className="mb-8 rounded-3xl border border-primary/40 bg-surface p-6 glow-ring">
+      <style>{`
+        @keyframes slot-fall {
+          from { transform: translateY(-110%); }
+          to { transform: translateY(0); }
+        }
+        @keyframes slot-land {
+          0% { transform: translateY(-120%) scale(1.05); }
+          60% { transform: translateY(4%) scale(0.98); }
+          80% { transform: translateY(-2%); }
+          100% { transform: translateY(0) scale(1); }
+        }
+        .slot-fall { animation: slot-fall 130ms linear both; }
+        .slot-land { animation: slot-land 450ms cubic-bezier(0.22, 1.4, 0.36, 1) both; }
+      `}</style>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">
