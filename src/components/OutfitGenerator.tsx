@@ -92,6 +92,7 @@ export function OutfitGenerator({
     const entry = pools.find((p) => p.slot.key === key);
     if (!entry) return;
     setOutfit((o) => ({ ...o, [key]: randomOf(entry.items, o[key] ?? undefined) }));
+    setTick((v) => v + 1);
   };
 
   const addJacket = () => {
