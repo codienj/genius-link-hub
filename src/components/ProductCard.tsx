@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { PriceTags, QualityBadges, VerifiedBadge } from "@/components/PriceTags";
 import type { Product } from "@/lib/store";
+import { useCart } from "@/lib/cart";
 
 /**
  * Lightweight grid card: single image + views, title, category, badges,
