@@ -1,4 +1,8 @@
+import { useState } from "react";
 import { useSocialLinks } from "@/lib/store";
+import { useCart } from "@/lib/cart";
+import { useCurrency, CURRENCIES, formatPrice } from "@/lib/currency";
+import { LANGS, useLang } from "@/lib/i18n";
 
 function IconLink({
   href,
@@ -23,34 +27,200 @@ function IconLink({
   );
 }
 
+function CartPanel({ onClose }: { onClose: () => void }) {
+  const { items, remove, clear } = useCart();
+  const { currency } = useCurrency();
+  const total = items.reduce((s, i) => s + i.price, 0);
+
+  return (
+    <div className="w-72 rounded-2xl border border-border bg-surface-deep/95 p-3 backdrop-blur-xl glow-ring">
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-sm font-bold">🛒 Koszyk</p>
+        <button
+          onClick={onClose}
+          aria-label="Zamknij koszyk"
+          className="text-xs text-muted-foreground hover:text-primary"
+        >
+          ✕
+        </button>
+      </div>
+
+      {items.length === 0 ? (
+        <p className="py-4 text-center text-xs text-muted-foreground">Koszyk jest pusty</p>
+      ) : (
+        <>
+          <ul className="max-h-72 space-y-2 overflow-y-auto pr-1">
+            {items.map((i) => (
+              <li
+                key={i.id}
+                className="flex items-center gap-2 rounded-xl border border-border bg-surface p-2"
+              >
+                {i.image ? (
+                  <img src={i.image} alt={i.title} className="h-10 w-10 rounded-lg object-cover" />
+                ) : (
+                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-xs">
+                    ?
+                  </span>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[11px] font-semibold">{i.title}</p>
+                  <p className="text-[11px] text-primary">{formatPrice(i.price, currency)}</p>
+                  {i.url ? (
+                    <a
+                      href={i.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[10px] font-semibold text-brand-cyan underline"
+                    >
+                      Otwórz link →
+                    </a>
+                  ) : null}
+                </div>
+                <button
+                  onClick={() => remove(i.id)}
+                  aria-label="Usuń z koszyka"
+                  className="text-xs text-muted-foreground hover:text-primary"
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-3 flex items-center justify-between border-t border-border pt-2 text-xs">
+            <span className="font-bold">{formatPrice(total, currency)}</span>
+            <button onClick={clear} className="text-muted-foreground hover:text-primary">
+              Wyczyść
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SettingsPanel({ onClose }: { onClose: () => void }) {
+  const { currency, setCurrency } = useCurrency();
+  const { lang, setLang } = useLang();
+
+  return (
+    <div className="w-64 rounded-2xl border border-border bg-surface-deep/95 p-3 backdrop-blur-xl glow-ring">
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-sm font-bold">⚙️ Ustawienia</p>
+        <button
+          onClick={onClose}
+          aria-label="Zamknij ustawienia"
+          className="text-xs text-muted-foreground hover:text-primary"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        Waluta
+      </p>
+      <div className="mb-3 grid grid-cols-4 gap-1">
+        {CURRENCIES.map((c) => (
+          <button
+            key={c.code}
+            onClick={() => setCurrency(c.code)}
+            className={`rounded-lg border px-1 py-1.5 text-[11px] font-bold transition-colors ${
+              currency === c.code
+                ? "border-primary bg-secondary text-primary glow-ring"
+                : "border-border text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {c.code}
+          </button>
+        ))}
+      </div>
+
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+        Język
+      </p>
+      <div className="grid grid-cols-4 gap-1">
+        {LANGS.map((l) => (
+          <button
+            key={l.code}
+            onClick={() => setLang(l.code)}
+            title={l.label}
+            className={`flex items-center justify-center gap-1 rounded-lg border px-1 py-1.5 text-[11px] font-bold transition-colors ${
+              lang === l.code
+                ? "border-primary bg-secondary text-primary glow-ring"
+                : "border-border text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <span aria-hidden="true">{l.flag}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /**
- * Prawa wyspa z linkami social. Zawiera WYŁĄCZNIE linki dodane ręcznie
- * w panelu (Branding → Socialne (dynamiczne)) — agenci nigdy nie trafiają tu automatycznie.
+ * Prawa wyspa: koszyk, ustawienia (waluta + język) oraz linki social
+ * dodane ręcznie w panelu (Branding → Socialne).
  */
 export function FloatingIsland() {
   const { data: socials } = useSocialLinks();
+  const { items } = useCart();
+  const [panel, setPanel] = useState<"cart" | "settings" | null>(null);
 
   const links = (socials ?? []).filter((l) => l.url);
-  if (!links.length) return null;
 
   return (
-    <div className="fixed right-3 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 rounded-xl border border-border bg-surface-deep/80 p-1.5 backdrop-blur-xl glow-ring sm:flex">
-      {links.map((l) => (
-        <IconLink key={l.id} href={l.url} label={l.label}>
-          {l.image_url ? (
-            <img
-              src={l.image_url}
-              alt={l.label}
-              loading="lazy"
-              className="h-5 w-5 rounded-md object-cover"
-            />
+    <div className="fixed right-3 top-1/2 z-40 flex -translate-y-1/2 items-start gap-2">
+      {panel ? (
+        <div className="order-first">
+          {panel === "cart" ? (
+            <CartPanel onClose={() => setPanel(null)} />
           ) : (
-            <span className="text-[9px] font-bold">
-              {l.icon || l.label.slice(0, 2).toUpperCase()}
-            </span>
+            <SettingsPanel onClose={() => setPanel(null)} />
           )}
-        </IconLink>
-      ))}
+        </div>
+      ) : null}
+
+      <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface-deep/80 p-1.5 backdrop-blur-xl glow-ring">
+        <button
+          onClick={() => setPanel((p) => (p === "cart" ? null : "cart"))}
+          aria-label="Koszyk"
+          title="Koszyk"
+          className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-sm transition-all hover:border-primary hover:glow-ring-strong"
+        >
+          🛒
+          {items.length ? (
+            <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-surface-deep">
+              {items.length}
+            </span>
+          ) : null}
+        </button>
+
+        <button
+          onClick={() => setPanel((p) => (p === "settings" ? null : "settings"))}
+          aria-label="Ustawienia"
+          title="Ustawienia"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-sm transition-all hover:border-primary hover:glow-ring-strong"
+        >
+          ⚙️
+        </button>
+
+        {links.map((l) => (
+          <IconLink key={l.id} href={l.url} label={l.label}>
+            {l.image_url ? (
+              <img
+                src={l.image_url}
+                alt={l.label}
+                loading="lazy"
+                className="h-5 w-5 rounded-md object-cover"
+              />
+            ) : (
+              <span className="text-[9px] font-bold">
+                {l.icon || l.label.slice(0, 2).toUpperCase()}
+              </span>
+            )}
+          </IconLink>
+        ))}
+      </div>
     </div>
   );
 }
