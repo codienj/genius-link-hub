@@ -3,13 +3,13 @@ import { useSettings } from "@/lib/store";
 import { LANGS, useLang } from "@/lib/i18n";
 
 const tabs = [
-  { to: "/", key: "nav.finder" },
-  { to: "/outfity", key: "nav.outfits" },
-  { to: "/sprzedawcy", key: "nav.sellers" },
-  { to: "/agenci", key: "nav.agents" },
-  { to: "/promocje", key: "nav.promos" },
-  { to: "/poradnik", key: "nav.guide" },
-  { to: "/linki", key: "nav.tiktok" },
+  { to: "/", key: "nav.finder", icon: "🏠" },
+  { to: "/outfity", key: "nav.outfits", icon: "👕" },
+  { to: "/sprzedawcy", key: "nav.sellers", icon: "🏬" },
+  { to: "/agenci", key: "nav.agents", icon: "🧭" },
+  { to: "/promocje", key: "nav.promos", icon: "🔥" },
+  { to: "/poradnik", key: "nav.guide", icon: "📘" },
+  { to: "/linki", key: "nav.tiktok", icon: "🎵" },
 ] as const;
 
 function LanguageSwitcher() {
