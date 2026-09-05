@@ -69,6 +69,9 @@ export function Header() {
                     "rounded-lg px-3 py-2 text-sm font-semibold text-primary bg-secondary glow-ring",
                 }}
               >
+                <span aria-hidden="true" className="mr-1.5">
+                  {tb.icon}
+                </span>
                 {t(tb.key)}
               </Link>
             ))}
