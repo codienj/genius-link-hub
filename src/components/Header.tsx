@@ -92,6 +92,9 @@ export function Header() {
                   "whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold text-primary bg-secondary",
               }}
             >
+              <span aria-hidden="true" className="mr-1">
+                {tb.icon}
+              </span>
               {t(tb.key)}
             </Link>
           ))}
