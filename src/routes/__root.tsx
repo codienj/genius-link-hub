@@ -153,6 +153,8 @@ function RootComponent() {
           {!isPanel && <PromoModal />}
           <ScrollToTop />
         </div>
+        </CartProvider>
+        </CurrencyProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );
