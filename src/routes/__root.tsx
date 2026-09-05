@@ -18,6 +18,8 @@ import { PromoModal } from "@/components/PromoModal";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickersBackground } from "@/components/StickersBackground";
 import { LanguageProvider } from "@/lib/i18n";
+import { CurrencyProvider } from "@/lib/currency";
+import { CartProvider } from "@/lib/cart";
 
 
 
@@ -140,6 +142,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        <CurrencyProvider>
+        <CartProvider>
         <div className="relative min-h-screen">
           {!isPanel && <StickersBackground />}
           {!isPanel && <Header />}
@@ -149,6 +153,8 @@ function RootComponent() {
           {!isPanel && <PromoModal />}
           <ScrollToTop />
         </div>
+        </CartProvider>
+        </CurrencyProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

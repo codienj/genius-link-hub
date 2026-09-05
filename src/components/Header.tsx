@@ -1,40 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { useSettings } from "@/lib/store";
-import { LANGS, useLang } from "@/lib/i18n";
+import { useLang } from "@/lib/i18n";
 
 const tabs = [
-  { to: "/", key: "nav.finder" },
-  { to: "/outfity", key: "nav.outfits" },
-  { to: "/sprzedawcy", key: "nav.sellers" },
-  { to: "/agenci", key: "nav.agents" },
-  { to: "/promocje", key: "nav.promos" },
-  { to: "/poradnik", key: "nav.guide" },
-  { to: "/linki", key: "nav.tiktok" },
+  { to: "/", key: "nav.finder", icon: "🏠" },
+  { to: "/outfity", key: "nav.outfits", icon: "👕" },
+  { to: "/sprzedawcy", key: "nav.sellers", icon: "🏬" },
+  { to: "/agenci", key: "nav.agents", icon: "🧭" },
+  { to: "/promocje", key: "nav.promos", icon: "🔥" },
+  { to: "/poradnik", key: "nav.guide", icon: "📘" },
+  { to: "/linki", key: "nav.tiktok", icon: "🎵" },
 ] as const;
-
-function LanguageSwitcher() {
-  const { lang, setLang } = useLang();
-  return (
-    <div className="flex max-w-[60vw] items-center gap-1 overflow-x-auto rounded-lg border border-border bg-secondary p-0.5">
-      {LANGS.map((l) => (
-        <button
-          key={l.code}
-          onClick={() => setLang(l.code)}
-          aria-label={l.label}
-          title={l.label}
-          className={`flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${
-            lang === l.code ? "bg-surface text-primary glow-ring" : "text-muted-foreground"
-          }`}
-        >
-          <span aria-hidden="true">{l.flag}</span>
-          {l.code.toUpperCase()}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-
 
 export function Header() {
   const { data: settings } = useSettings();
@@ -69,13 +45,13 @@ export function Header() {
                     "rounded-lg px-3 py-2 text-sm font-semibold text-primary bg-secondary glow-ring",
                 }}
               >
+                <span aria-hidden="true" className="mr-1.5">
+                  {tb.icon}
+                </span>
                 {t(tb.key)}
               </Link>
             ))}
           </nav>
-          <div className="ml-auto lg:ml-2">
-            <LanguageSwitcher />
-          </div>
         </div>
         <nav className="flex gap-1 overflow-x-auto pb-1 lg:hidden">
           {tabs.map((tb) => (
@@ -89,6 +65,9 @@ export function Header() {
                   "whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold text-primary bg-secondary",
               }}
             >
+              <span aria-hidden="true" className="mr-1">
+                {tb.icon}
+              </span>
               {t(tb.key)}
             </Link>
           ))}
