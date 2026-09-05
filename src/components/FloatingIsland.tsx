@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSocialLinks } from "@/lib/store";
 import { useCart } from "@/lib/cart";
 import { useCurrency, CURRENCIES, formatPrice } from "@/lib/currency";
@@ -27,7 +26,7 @@ function IconLink({
   );
 }
 
-function CartPanel({ onClose }: { onClose: () => void }) {
+export function CartPanel({ onClose }: { onClose: () => void }) {
   const { items, remove, clear } = useCart();
   const { currency } = useCurrency();
   const total = items.reduce((s, i) => s + i.price, 0);
@@ -98,7 +97,7 @@ function CartPanel({ onClose }: { onClose: () => void }) {
   );
 }
 
-function SettingsPanel({ onClose }: { onClose: () => void }) {
+export function SettingsPanel({ onClose }: { onClose: () => void }) {
   const { currency, setCurrency } = useCurrency();
   const { lang, setLang } = useLang();
 
@@ -158,52 +157,19 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
 }
 
 /**
- * Prawa wyspa: koszyk, ustawienia (waluta + język) oraz linki social
- * dodane ręcznie w panelu (Branding → Socialne).
+ * Prawa wyspa: linki social dodane ręcznie w panelu (Branding → Socialne).
+ * Koszyk i ustawienia znajdują się w górnej wyspie (Header).
  */
 export function FloatingIsland() {
   const { data: socials } = useSocialLinks();
-  const { items } = useCart();
-  const [panel, setPanel] = useState<"cart" | "settings" | null>(null);
 
   const links = (socials ?? []).filter((l) => l.url);
 
+  if (!links.length) return null;
+
   return (
     <div className="fixed right-3 top-1/2 z-40 flex -translate-y-1/2 items-start gap-2">
-      {panel ? (
-        <div className="order-first">
-          {panel === "cart" ? (
-            <CartPanel onClose={() => setPanel(null)} />
-          ) : (
-            <SettingsPanel onClose={() => setPanel(null)} />
-          )}
-        </div>
-      ) : null}
-
       <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-surface-deep/80 p-1.5 backdrop-blur-xl glow-ring">
-        <button
-          onClick={() => setPanel((p) => (p === "cart" ? null : "cart"))}
-          aria-label="Koszyk"
-          title="Koszyk"
-          className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-sm transition-all hover:border-primary hover:glow-ring-strong"
-        >
-          🛒
-          {items.length ? (
-            <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-surface-deep">
-              {items.length}
-            </span>
-          ) : null}
-        </button>
-
-        <button
-          onClick={() => setPanel((p) => (p === "settings" ? null : "settings"))}
-          aria-label="Ustawienia"
-          title="Ustawienia"
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-surface text-sm transition-all hover:border-primary hover:glow-ring-strong"
-        >
-          ⚙️
-        </button>
-
         {links.map((l) => (
           <IconLink key={l.id} href={l.url} label={l.label}>
             {l.image_url ? (

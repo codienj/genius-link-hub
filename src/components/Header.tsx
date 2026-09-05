@@ -1,6 +1,57 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useSettings } from "@/lib/store";
 import { useLang } from "@/lib/i18n";
+import { useCart } from "@/lib/cart";
+import { CartPanel, SettingsPanel } from "@/components/FloatingIsland";
+
+function HeaderActions() {
+  const { items } = useCart();
+  const [panel, setPanel] = useState<"cart" | "settings" | null>(null);
+
+  return (
+    <div className="relative ml-auto flex items-center gap-1.5 lg:ml-2">
+      <button
+        onClick={() => setPanel((p) => (p === "cart" ? null : "cart"))}
+        aria-label="Koszyk"
+        title="Koszyk"
+        className={`relative flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-all hover:border-primary hover:glow-ring-strong ${
+          panel === "cart" ? "border-primary bg-secondary glow-ring" : "border-border bg-surface"
+        }`}
+      >
+        🛒
+        {items.length ? (
+          <span className="absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-primary px-1 text-[9px] font-bold text-surface-deep">
+            {items.length}
+          </span>
+        ) : null}
+      </button>
+
+      <button
+        onClick={() => setPanel((p) => (p === "settings" ? null : "settings"))}
+        aria-label="Ustawienia"
+        title="Ustawienia"
+        className={`flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-all hover:border-primary hover:glow-ring-strong ${
+          panel === "settings"
+            ? "border-primary bg-secondary glow-ring"
+            : "border-border bg-surface"
+        }`}
+      >
+        ⚙️
+      </button>
+
+      {panel ? (
+        <div className="absolute right-0 top-full z-50 mt-2">
+          {panel === "cart" ? (
+            <CartPanel onClose={() => setPanel(null)} />
+          ) : (
+            <SettingsPanel onClose={() => setPanel(null)} />
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 const tabs = [
   { to: "/", key: "nav.finder", icon: "🏠" },
@@ -52,6 +103,7 @@ export function Header() {
               </Link>
             ))}
           </nav>
+          <HeaderActions />
         </div>
         <nav className="flex gap-1 overflow-x-auto pb-1 lg:hidden">
           {tabs.map((tb) => (
