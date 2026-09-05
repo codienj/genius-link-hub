@@ -35,11 +35,14 @@ export function ProductCard({
         )}
 
         <button
-          aria-label="Dodaj do ulubionych"
-          onClick={() => setWish((w) => !w)}
-          className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface-deep/70 backdrop-blur transition-all hover:border-primary hover:glow-ring"
+          aria-label={inCart ? "Usuń z koszyka" : "Dodaj do koszyka"}
+          title={inCart ? "Usuń z koszyka" : "Dodaj do koszyka"}
+          onClick={() => toggle(product)}
+          className={`absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-lg border bg-surface-deep/70 text-sm backdrop-blur transition-all hover:border-primary hover:glow-ring ${
+            inCart ? "border-primary glow-ring" : "border-border"
+          }`}
         >
-          <span className={wish ? "text-primary" : "text-muted-foreground"}>♥</span>
+          <span>{inCart ? "✅" : "🛒"}</span>
         </button>
 
         {product.verified ? <VerifiedBadge className="absolute left-2 top-2" /> : null}
