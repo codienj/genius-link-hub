@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useSocialLinks } from "@/lib/store";
 import { useCart } from "@/lib/cart";
 import { useCurrency, CURRENCIES, formatPrice } from "@/lib/currency";
