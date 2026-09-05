@@ -1,19 +1,20 @@
-import { cnyFromPln, money, usdFromPln } from "@/lib/store";
+import { cnyFromPln, money } from "@/lib/store";
 import { useLang } from "@/lib/i18n";
+import { formatPrice, useCurrency } from "@/lib/currency";
 
-/** Main price — PLN for Polish, USD for English — with secondary estimates. */
+/** Main price in the currency picked in settings, with secondary estimates. */
 export function PriceTags({ pln, size = "md" }: { pln: number; size?: "sm" | "md" | "lg" }) {
-  const { lang } = useLang();
+  const { currency } = useCurrency();
   const main = size === "lg" ? "text-2xl" : size === "sm" ? "text-sm" : "text-lg";
-  const isEn = lang === "en";
 
   return (
     <div>
       <p className={`font-display ${main} font-bold leading-tight`}>
-        {isEn ? `$${money(usdFromPln(pln))}` : `${money(pln)} PLN`}
+        {formatPrice(pln, currency)}
       </p>
       <p className="text-[11px] text-muted-foreground">
-        {isEn ? `≈ ${money(pln)} PLN` : `≈ $${money(usdFromPln(pln))}`} · ¥{money(cnyFromPln(pln))}
+        {currency === "PLN" ? `≈ ${formatPrice(pln, "USD")}` : `≈ ${money(pln)} zł`} · ¥
+        {money(cnyFromPln(pln))}
       </p>
     </div>
   );
