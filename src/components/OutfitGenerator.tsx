@@ -198,9 +198,10 @@ export function OutfitGenerator({
               <div className="aspect-square overflow-hidden bg-secondary">
                 {item?.image_url ? (
                   <img
+                    key={`${slot.key}-${tick}-${item.id}`}
                     src={item.image_url}
                     alt={item.title}
-                    className={`h-full w-full object-cover ${spinning ? "blur-[1px]" : ""}`}
+                    className={`h-full w-full object-cover ${spinning ? "slot-fall blur-[1px]" : "slot-land"}`}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center px-3 text-center text-[11px] text-muted-foreground">
