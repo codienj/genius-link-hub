@@ -13,7 +13,8 @@ export function ProductCard({
   product: Product;
   onDetails?: (p: Product) => void;
 }) {
-  const [wish, setWish] = useState(false);
+  const { has, toggle } = useCart();
+  const inCart = has(product.id);
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-all hover:-translate-y-1 hover:border-primary/60 hover:glow-ring">
