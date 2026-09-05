@@ -62,6 +62,7 @@ export function OutfitGenerator({
 
   const [outfit, setOutfit] = useState<Partial<Record<SlotKey, Product | null>>>({});
   const [spinning, setSpinning] = useState(false);
+  const [tick, setTick] = useState(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const total = slots.reduce((sum, s) => sum + Number(outfit[s.key]?.price ?? 0), 0);
@@ -79,6 +80,7 @@ export function OutfitGenerator({
         next[slot.key] = randomOf(items);
       }
       setOutfit(next);
+      setTick((v) => v + 1);
       if (ticks >= 14) {
         if (timer.current) clearInterval(timer.current);
         setSpinning(false);
@@ -90,6 +92,7 @@ export function OutfitGenerator({
     const entry = pools.find((p) => p.slot.key === key);
     if (!entry) return;
     setOutfit((o) => ({ ...o, [key]: randomOf(entry.items, o[key] ?? undefined) }));
+    setTick((v) => v + 1);
   };
 
   const addJacket = () => {
@@ -104,6 +107,20 @@ export function OutfitGenerator({
 
   return (
     <section className="mb-8 rounded-3xl border border-primary/40 bg-surface p-6 glow-ring">
+      <style>{`
+        @keyframes slot-fall {
+          from { transform: translateY(-110%); }
+          to { transform: translateY(0); }
+        }
+        @keyframes slot-land {
+          0% { transform: translateY(-120%) scale(1.05); }
+          60% { transform: translateY(4%) scale(0.98); }
+          80% { transform: translateY(-2%); }
+          100% { transform: translateY(0) scale(1); }
+        }
+        .slot-fall { animation: slot-fall 130ms linear both; }
+        .slot-land { animation: slot-land 450ms cubic-bezier(0.22, 1.4, 0.36, 1) both; }
+      `}</style>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">
@@ -181,9 +198,10 @@ export function OutfitGenerator({
               <div className="aspect-square overflow-hidden bg-secondary">
                 {item?.image_url ? (
                   <img
+                    key={`${slot.key}-${tick}-${item.id}`}
                     src={item.image_url}
                     alt={item.title}
-                    className={`h-full w-full object-cover ${spinning ? "blur-[1px]" : ""}`}
+                    className={`h-full w-full object-cover ${spinning ? "slot-fall blur-[1px]" : "slot-land"}`}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center px-3 text-center text-[11px] text-muted-foreground">
