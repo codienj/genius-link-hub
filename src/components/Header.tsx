@@ -103,6 +103,7 @@ export function Header() {
               </Link>
             ))}
           </nav>
+          <HeaderActions />
         </div>
         <nav className="flex gap-1 overflow-x-auto pb-1 lg:hidden">
           {tabs.map((tb) => (
