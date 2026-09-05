@@ -62,6 +62,7 @@ export function OutfitGenerator({
 
   const [outfit, setOutfit] = useState<Partial<Record<SlotKey, Product | null>>>({});
   const [spinning, setSpinning] = useState(false);
+  const [tick, setTick] = useState(0);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const total = slots.reduce((sum, s) => sum + Number(outfit[s.key]?.price ?? 0), 0);
