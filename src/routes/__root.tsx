@@ -142,6 +142,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
+        <CurrencyProvider>
+        <CartProvider>
         <div className="relative min-h-screen">
           {!isPanel && <StickersBackground />}
           {!isPanel && <Header />}
