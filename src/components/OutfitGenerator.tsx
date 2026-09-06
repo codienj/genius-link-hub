@@ -172,7 +172,7 @@ export function OutfitGenerator({
           </button>
         </div>
       </div>
-      <div className="mt-6 grid gap-4 grid-cols-2 lg:grid-cols-5">
+      <div className={`mt-6 grid gap-4 grid-cols-2 ${jacketOn ? "lg:grid-cols-5" : "lg:grid-cols-4"}`}>
         {ALL_SLOTS.map((slot) => {
           if (slot.key === "jacket" && !jacketOn) return null;
           const item = outfit[slot.key] ?? null;

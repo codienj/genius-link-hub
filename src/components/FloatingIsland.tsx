@@ -128,7 +128,7 @@ export function SettingsPanel({ onClose }: { onClose: () => void }) {
                 : "border-border text-muted-foreground hover:text-foreground"
             }`}
           >
-            {c.code}
+            {c.symbol} {c.code}
           </button>
         ))}
       </div>
