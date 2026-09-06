@@ -3,21 +3,19 @@ import { Link } from "@tanstack/react-router";
 import { useSettings } from "@/lib/store";
 import { useLang } from "@/lib/i18n";
 import { useCart } from "@/lib/cart";
-import { CartPanel, SettingsPanel } from "@/components/FloatingIsland";
+import { SettingsPanel } from "@/components/FloatingIsland";
 
 function HeaderActions() {
   const { items } = useCart();
-  const [panel, setPanel] = useState<"cart" | "settings" | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <div className="relative ml-auto flex items-center gap-1.5 lg:ml-2">
-      <button
-        onClick={() => setPanel((p) => (p === "cart" ? null : "cart"))}
+      <Link
+        to="/cart"
         aria-label="Koszyk"
         title="Koszyk"
-        className={`relative flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-all hover:border-primary hover:glow-ring-strong ${
-          panel === "cart" ? "border-primary bg-secondary glow-ring" : "border-border bg-surface"
-        }`}
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-sm transition-all hover:border-primary hover:glow-ring-strong"
       >
         🛒
         {items.length ? (
@@ -25,14 +23,14 @@ function HeaderActions() {
             {items.length}
           </span>
         ) : null}
-      </button>
+      </Link>
 
       <button
-        onClick={() => setPanel((p) => (p === "settings" ? null : "settings"))}
+        onClick={() => setSettingsOpen((p) => !p)}
         aria-label="Ustawienia"
         title="Ustawienia"
         className={`flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-all hover:border-primary hover:glow-ring-strong ${
-          panel === "settings"
+          settingsOpen
             ? "border-primary bg-secondary glow-ring"
             : "border-border bg-surface"
         }`}
@@ -40,13 +38,9 @@ function HeaderActions() {
         ⚙️
       </button>
 
-      {panel ? (
+      {settingsOpen ? (
         <div className="absolute right-0 top-full z-50 mt-2">
-          {panel === "cart" ? (
-            <CartPanel onClose={() => setPanel(null)} />
-          ) : (
-            <SettingsPanel onClose={() => setPanel(null)} />
-          )}
+          <SettingsPanel onClose={() => setSettingsOpen(false)} />
         </div>
       ) : null}
     </div>

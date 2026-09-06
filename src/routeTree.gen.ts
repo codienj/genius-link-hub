@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AgenciRouteImport } from './routes/agenci'
+import { Route as CartRouteImport } from './routes/cart'
 import { Route as LinkiRouteImport } from './routes/linki'
 import { Route as OutfityRouteImport } from './routes/outfity'
 import { Route as PoradnikRouteImport } from './routes/poradnik'
@@ -34,6 +35,11 @@ const AdminRoute = AdminRouteImport.update({
 const AgenciRoute = AgenciRouteImport.update({
   id: '/agenci',
   path: '/agenci',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LinkiRoute = LinkiRouteImport.update({
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agenci': typeof AgenciRoute
+  '/cart': typeof CartRoute
   '/linki': typeof LinkiRoute
   '/outfity': typeof OutfityRoute
   '/poradnik': typeof PoradnikRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agenci': typeof AgenciRoute
+  '/cart': typeof CartRoute
   '/linki': typeof LinkiRoute
   '/outfity': typeof OutfityRoute
   '/poradnik': typeof PoradnikRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/agenci': typeof AgenciRoute
+  '/cart': typeof CartRoute
   '/linki': typeof LinkiRoute
   '/outfity': typeof OutfityRoute
   '/poradnik': typeof PoradnikRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agenci'
+    | '/cart'
     | '/linki'
     | '/outfity'
     | '/poradnik'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agenci'
+    | '/cart'
     | '/linki'
     | '/outfity'
     | '/poradnik'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/agenci'
+    | '/cart'
     | '/linki'
     | '/outfity'
     | '/poradnik'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AgenciRoute: typeof AgenciRoute
+  CartRoute: typeof CartRoute
   LinkiRoute: typeof LinkiRoute
   OutfityRoute: typeof OutfityRoute
   PoradnikRoute: typeof PoradnikRoute
@@ -194,6 +207,13 @@ declare module '@tanstack/react-router' {
       path: '/agenci'
       fullPath: '/agenci'
       preLoaderRoute: typeof AgenciRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/linki': {
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AgenciRoute: AgenciRoute,
+  CartRoute: CartRoute,
   LinkiRoute: LinkiRoute,
   OutfityRoute: OutfityRoute,
   PoradnikRoute: PoradnikRoute,
